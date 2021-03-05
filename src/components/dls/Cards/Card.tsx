@@ -1,22 +1,52 @@
 import React from 'react';
 import styled from 'styled-components';
 import { rgba } from 'polished';
+import Image from 'next/image';
+
+type CardProps = {
+  title: string;
+  subtitle: string;
+  image: string;
+};
+
+const DIMENSIONS = {
+  WIDTH: 360,
+  HEIGHT: 180,
+};
+
+const Card = ({ title, subtitle, image }: CardProps) => (
+  <CardContainer>
+    <StyledImage
+      src={image}
+      role="presentation"
+      alt={title}
+      width={DIMENSIONS.WIDTH}
+      height={DIMENSIONS.HEIGHT}
+    />
+    <Caption>
+      <div>
+        <Title>{title}</Title>
+        <p>{subtitle}</p>
+      </div>
+    </Caption>
+  </CardContainer>
+);
 
 const CardContainer = styled.figure`
   position: relative;
-  border-radius: 10px;
+  border-radius: ${(props) => props.theme.borderRadiuses.default};
   width: 100%;
   white-space: normal;
   scroll-snap-align: center;
-  margin: 0px;
+  margin: 0;
   overflow: hidden;
-  height: 180px;
+  height: calc(6 * ${(props) => props.theme.spacing.mega});
 `;
 
-const Image = styled.img`
+const StyledImage = styled(Image)`
   max-width: 100%;
   height: auto;
-  border-radius: 10px;
+  border-radius: ${(props) => props.theme.borderRadiuses.default};
   width: 100%;
 `;
 
@@ -26,39 +56,21 @@ const Caption = styled.div`
   right: 0;
   bottom: 0;
   left: 0;
-  background: ${(props) => rgba(props.theme.colors.primary, 0.7)};
-  border-radius: 10px;
+  background: ${(props) => rgba(props.theme.colors.primary.medium, 0.7)};
+  border-radius: ${(props) => props.theme.borderRadiuses.default};
   font-family: SFProText-Regular;
-  font-size: 16px;
-  color: #fff;
-  padding: 16px 30px;
+  font-size: ${(props) => props.theme.fontSizes.xlarge};
+  color: ${(props) => props.theme.colors.text.link};
+  padding: ${(props) => props.theme.spacing.medium} ${(props) => props.theme.spacing.mega};
   align-items: flex-end;
   display: flex;
 `;
 
 const Title = styled.h3`
   font-family: SFProText-Regular;
-  font-size: 26px;
+  font-size: calc(2 * ${(props) => props.theme.fontSizes.large});
   color: #fff;
-  margin-bottom: 7px;
+  margin-bottom: ${(props) => props.theme.spacing.xxsmall};
 `;
-
-type CardProps = {
-  title: string;
-  subtitle: string;
-  image: string;
-};
-
-const Card = ({ title, subtitle, image }: CardProps) => (
-  <CardContainer>
-    <Image src={image} role="presentation" alt={title} />
-    <Caption>
-      <div>
-        <Title>{title}</Title>
-        <p>{subtitle}</p>
-      </div>
-    </Caption>
-  </CardContainer>
-);
 
 export default Card;

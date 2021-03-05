@@ -6,15 +6,16 @@ const TabNavList = styled.ul`
 `;
 
 const selectedCss = css<{ selected: boolean }>`
-  color: ${({ theme }) => theme.colors.primary};
-  border-bottom: 3px solid ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.primary.medium};
+  border-bottom: ${(props) => props.theme.spacing.micro} solid
+    ${({ theme }) => theme.colors.primary.medium};
 `;
 
 const TabNavItem = styled.li<{ selected: boolean }>`
-  color: ${({ theme }) => theme.colors.text};
-  font-size: ${({ theme }) => theme.base.unit * 1.5}rem;
+  color: ${({ theme }) => theme.colors.text.default};
+  font-size: ${({ theme }) => theme.spacing.large};
   display: inline-block;
-  margin-right: ${({ theme }) => theme.base.unit * 2.5}rem;
+  margin-right: ${({ theme }) => theme.spacing.mega};
   cursor: pointer;
   ${(props) => props.selected && selectedCss}
 `;
@@ -24,13 +25,13 @@ type TabsProps = {
   children: ReactElement[];
 };
 
-const Tabs = ({ initial, children }: TabsProps) => {
-  const [currentTab, setCurrentTab] = useState(initial || 0);
+const Tabs = ({ initial = 0, children }: TabsProps) => {
+  const [currentTab, setCurrentTab] = useState(initial);
 
   return (
     <div>
       <section role="tabpanel">
-      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role */}
+        {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role */}
         <nav role="tablist">
           <TabNavList>
             {React.Children.map(children, (child, i) => {

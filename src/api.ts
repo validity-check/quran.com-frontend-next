@@ -1,16 +1,9 @@
-import fetch from 'isomorphic-unfetch';
 import { camelizeKeys } from 'humps';
 import { makeUrl } from './utils/api';
 import ChapterType from '../types/ChapterType';
 import VerseType from '../types/VerseType';
 
-// const instance = axios.create({
-//   baseURL: 'https://some-domain.com/api/',
-//   timeout: 1000,
-//   headers: {'X-Custom-Header': 'foobar'}
-// });
-
-export const fetcher = async function(input: RequestInfo, init?: RequestInit) {
+export const fetcher = async function fetcher(input: RequestInfo, init?: RequestInit) {
   const res = await fetch(input, init);
   return res.json();
 };
@@ -34,7 +27,7 @@ export const getChapterInfo = async (id: string | number | string[]) => {
 };
 
 export const getChapterVerses = async (id: string | number | string[]) => {
-  const payload = await fetcher(makeUrl(`/chapters/${id}/verses`));
+  const payload = await fetcher(makeUrl(`/chapters/${id}/verses`, { translations: 20, limit: 25 })); // TODO (@abdellatif): parameterize the default translation
 
   return camelizeKeys(payload) as { verses: VerseType[] };
 };

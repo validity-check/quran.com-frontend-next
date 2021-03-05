@@ -10,7 +10,6 @@ module.exports = {
     '@storybook/addon-storysource',
     '@storybook/addon-viewport/register',
     '@storybook/addon-a11y/register',
-    'storybook-addon-styled-component-theme/dist/register',
   ],
   webpackFinal: async (config) => {
     config.module.rules.push({
@@ -37,7 +36,13 @@ module.exports = {
         },
       ],
     });
-    config.resolve.extensions.push('.ts', '.tsx');
+    config.resolve.extensions.push('.ts', '.tsx', '.css');
+
+    // Add support for absolute paths
+     config.resolve.modules = [
+    ...(config.resolve.modules || []),
+    path.resolve('./'),
+  ];
     return config;
   },
 };

@@ -1,60 +1,51 @@
 import React from 'react';
-import pad from 'lodash/pad';
-import WordWrap from './WordWrap';
-import WordGlyph from './WordGlyph';
-import WordType from '../../../../types/WordType';
-import { WORD_TYPES } from '../../../constants/words';
-import WordTransparent from './WordTransparent';
+import WordType, { CharType } from 'types/WordType';
+import { QuranFont } from 'src/components/QuranReader/types';
+import styled from 'styled-components';
+import IndoPakWordText from './IndoPakWordText';
+import MadaniWordText from './MadaniWordText';
+import UthmaniWordText from './UthmaniWordText';
 
 type QuranWordProps = {
   word: WordType;
-  setCurrentWord?: $TsFixMe;
-  pause?: $TsFixMe;
-  setCurrentVerseKey?: $TsFixMe;
-  playCurrentWord?: $TsFixMe;
-  tooltip: 'translation' | 'transliteration';
-  audioPosition?: number;
-  isCurrentVersePlaying?: boolean;
-  isSearched?: boolean;
-  useTextFont?: boolean;
+  fontStyle?: QuranFont;
+  highlight?: boolean;
 };
 
-const QuranWord = ({
-  word,
-  isCurrentVersePlaying = false,
-  audioPosition,
-  useTextFont,
-}: QuranWordProps) => {
-  let text = '';
+const QuranWord = ({ word, fontStyle, highlight }: QuranWordProps) => {
+  let WordText;
 
-  // const className = `${useTextFont ? 'text-' : ''}${word.className} ${word.charType} ${
-  //   word.highlight ? word.highlight : ''
-  // }`;
-
-  if (useTextFont) {
-    if (word.charType === WORD_TYPES.CHAR_TYPE_END) {
-      text = pad(word.verseKey.split(':')[1], 3, '0');
-    } else if (word.textMadani) {
-      text = word.textMadani;
+  // Render all words except ayah markers
+  if (fontStyle === QuranFont.Uthmani || word.charType !== CharType.End) {
+    if (fontStyle === QuranFont.Uthmani) {
+      WordText = <UthmaniWordText code={word.code} pageNumber={word.pageNumber} />;
+    } else if (fontStyle === QuranFont.IndoPak) {
+      WordText = <IndoPakWordText text={word.textMadani} />;
+    } else {
+      WordText = <MadaniWordText text={word.textMadani} />;
     }
   } else {
-    text = word.code;
+    // Render ayah markers
+    // Extract the verse number and convert it to Arabic digits
+    const arabicVerseNumber = parseInt(
+      word.verseKey.substring(word.verseKey.indexOf(':') + 1),
+      10,
+    ).toLocaleString('ar-EG');
+
+    // reverse the arabic digits such that they're displayed as 10, 11, 12.. instead of 01, 11, 21
+    const reversedArabicVerseNumber = arabicVerseNumber.split('').reverse().join('');
+    WordText = <MadaniWordText text={`${reversedArabicVerseNumber} `} />;
   }
 
-  return (
-    <WordWrap
-      role="button"
-      tabIndex={audioPosition}
-      highlight={isCurrentVersePlaying}
-      // onDoubleClick={this.handleSegmentPlay}
-      // onClick={this.handleWordPlay}
-      // onKeyPress={this.handleWordPlay}
-    >
-      <WordGlyph wordClassName={word.className} dangerouslySetInnerHTML={{ __html: text }} />
-
-      <WordTransparent dangerouslySetInnerHTML={{ __html: `${word.textMadani} ` || ' ' }} />
-    </WordWrap>
-  );
+  return <StyledWordContainer highlight={highlight}>{WordText}</StyledWordContainer>;
 };
+
+type StyledWordContainerProps = {
+  highlight?: boolean;
+};
+
+const StyledWordContainer = styled.span<StyledWordContainerProps>`
+  color: ${(props) => props.highlight && props.theme.colors.primary.medium};
+`;
 
 export default QuranWord;

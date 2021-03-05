@@ -1,13 +1,12 @@
 import { NextSeoProps } from 'next-seo';
-import logo from '../../public/logo.png';
-import { theme } from './styles';
+import { theme } from '../styles/theme';
 
 export const config = {
   siteName: "Al-Qur'an al-Kareem - القرآن الكريم",
   siteDescription: 'The Quran translated into many languages in a simple and easy interface',
   defaultPageTitle: 'Quran.com',
   baseUrl: 'twitter.com',
-  websiteLogo: logo,
+  websiteLogo: '/logo.png',
   twitterHandle: '@twitter',
   twitterCardType: 'twitter',
 };
@@ -32,7 +31,7 @@ export function createSEOConfig({
     titleTemplate: '%s - Quran.com',
     openGraph: {
       type: 'website',
-      locale: 'en_US',
+      locale: 'en_US', // TODO: (@abdellatif): adjust this based on the next-translate locale
       url: canonicalUrl,
       title: seoTitle,
       description: setDescription,
@@ -44,7 +43,7 @@ export function createSEOConfig({
           alt: config.siteName,
         },
       ],
-      // eslint-disable-next-line  @typescript-eslint/camelcase
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       site_name: config.siteName,
     },
     twitter: {
@@ -67,7 +66,7 @@ export function createSEOConfig({
       },
       {
         name: 'theme-color',
-        content: theme.colors.primary,
+        content: theme.colors.primary.medium,
       },
     ],
   }; // defaultImageHeight: 500, // defaultImageWidth: 500,
